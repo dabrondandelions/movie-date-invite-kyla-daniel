@@ -72,7 +72,6 @@
       display: none; 
     }
 
-    /* Class applied when visible */
     .animate-pop {
       display: block !important;
       animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -80,6 +79,13 @@
 
     h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
     p { font-size: 1.1em; color: #004c4c; }
+    
+    /* Style for the Discord Link */
+    .discord-link {
+      color: #00796b;
+      text-decoration: underline;
+      font-weight: bold;
+    }
 
     .btn-container {
       height: 120px;
@@ -109,7 +115,7 @@
       position: fixed;
       font-size: 25px;
       pointer-events: none;
-      animation: floatUp 3s linear forwards;
+      animation: floatUp 3.5s linear forwards;
       z-index: 100;
     }
 
@@ -158,21 +164,19 @@
     function yesClicked() {
       const content = document.getElementById("main-content");
       
-      // 1. Remove the animation class temporarily to "reset" it
       content.classList.remove("animate-pop");
-      
-      // 2. Force a quick reflow/restart so the browser notices the class removal
       void content.offsetWidth; 
 
-      // 3. Update the HTML and re-add the pop animation class
+      // Updated with new emojis and Discord link
       content.innerHTML = `
-        <h1 style="color:#006d6d;">kamsahamnida~ 💖</h1>
-        <p>See you soon!</p>
+        <h1 style="color:#006d6d;">kamsahamnida~ 💗🤍</h1>
+        <p><a href="https://discord.com/users/dabrondawg" class="discord-link" target="_blank">See you soon!</a></p>
       `;
       
       content.classList.add("animate-pop");
 
-      setInterval(createHeart, 300);
+      // Spawns hearts more frequently for a better effect
+      setInterval(createHeart, 250);
     }
 
     function moveButton(event) {
@@ -193,12 +197,17 @@
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
-      heart.innerHTML = "💖";
+      
+      // Randomly choose between pink and white hearts
+      const heartType = Math.random() > 0.5 ? "💗" : "🤍";
+      heart.innerHTML = heartType;
+      
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.top = "100vh";
+      heart.style.top = "100vh"; // Starts from the bottom
       heart.style.fontSize = (Math.random() * 20 + 20) + "px";
       document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 3000);
+      
+      setTimeout(() => heart.remove(), 4000);
     }
   </script>
 
