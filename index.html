@@ -10,23 +10,18 @@
 
     html, body {
       margin: 0; padding: 0;
-      width: 100%; min-height: 100vh;
-      overflow: hidden; /* Prevent scrolling if the button moves near the edge */
+      width: 100%; height: 100%;
+      overflow: hidden; /* Stops the page from bouncing/scrolling */
+      background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
     }
 
     body {
-      text-align: center;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
-      background-attachment: fixed;
-      background-size: cover;
     }
 
-    /* Envelope Overlay */
     #door-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -41,24 +36,11 @@
       transition: opacity 0.8s ease, visibility 0.8s;
     }
 
-    #door-overlay h2 { color: white; margin-top: 20px; font-weight: 300; }
-
-    .envelope-icon {
-      font-size: 80px;
-      animation: bounce 2s infinite;
-    }
-
+    .envelope-icon { font-size: 80px; animation: bounce 2s infinite; }
     @keyframes bounce {
       0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
       40% {transform: translateY(-20px);}
       60% {transform: translateY(-10px);}
-    }
-
-    /* --- ANIMATIONS --- */
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.5); }
-      70% { transform: scale(1.05); }
-      100% { opacity: 1; transform: scale(1); }
     }
 
     .content-overlay {
@@ -67,9 +49,10 @@
       border-radius: 30px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       width: 85%;
-      max-width: 400px;
+      max-width: 350px;
+      text-align: center;
+      display: none;
       z-index: 10;
-      display: none; 
     }
 
     .animate-pop {
@@ -77,29 +60,25 @@
       animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
-    p { font-size: 1.1em; color: #004c4c; }
-    
-    .discord-link {
-      color: #00796b;
-      text-decoration: underline;
-      font-weight: bold;
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
+    h1 { font-size: 2em; color: #006d6d; margin-bottom: 10px; }
+    p { font-size: 1.1em; color: #004c4c; }
+
     .btn-container {
-      height: 120px;
-      width: 100%;
-      position: relative;
+      margin-top: 30px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      margin-top: 20px;
+      gap: 20px;
+      height: 60px; /* Space for buttons */
     }
 
     button {
       padding: 15px 30px;
       font-size: 18px;
-      margin: 10px;
       border: none;
       border-radius: 50px;
       cursor: pointer;
@@ -107,23 +86,21 @@
       touch-action: manipulation;
     }
 
-    #yes { background-color: #00a8a8; color: white; z-index: 5; }
+    #yes { background-color: #00a8a8; color: white; }
 
-    #no { 
-      background-color: #b2dfdb; 
-      color: #004c4c; 
-      /* Added transition for top and left for smooth sliding */
-      transition: top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                  left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 20; /* Keep it above other elements */
+    #no {
+      background-color: #b2dfdb;
+      color: #004c4c;
+      position: fixed; /* Fixed from the start prevents teleporting */
+      /* Smooth movement timing */
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 999;
     }
 
     .heart {
       position: fixed;
-      font-size: 25px;
       pointer-events: none;
       animation: floatUp 3.5s linear forwards;
-      z-index: 100;
     }
 
     @keyframes floatUp {
@@ -132,12 +109,11 @@
     }
   </style>
 </head>
-<body>
+<body onload="initNoButton()">
 
   <div id="door-overlay" onclick="openDoor()">
     <div class="envelope-icon">💌</div>
-    <h2>You have a message...</h2>
-    <p style="color: #b2dfdb;">(Tap to open)</p>
+    <h2 style="color:white; font-weight:300;">You have a message...</h2>
   </div>
 
   <div id="main-content" class="content-overlay">
@@ -147,74 +123,79 @@
     <div class="btn-container">
       <button id="yes" onclick="yesClicked()">Yes</button>
       <button id="no" 
-              onclick="moveButton(event)" 
-              ontouchstart="moveButton(event)" 
-              onmouseover="moveButton(event)">No</button>
+              onmouseover="moveButton()" 
+              onclick="moveButton()" 
+              ontouchstart="moveButton(event)">No</button>
     </div>
   </div>
 
-  <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
+  <audio id="bg-music" src="sweetnightguitar.mp3" loop></audio>
 
   <script>
+    const noBtn = document.getElementById("no");
+
+    // 1. Position the "No" button correctly on load so it doesn't jump
+    function initNoButton() {
+      const container = document.querySelector('.btn-container');
+      const rect = container.getBoundingClientRect();
+      
+      // Center it roughly next to the "Yes" button initially
+      noBtn.style.left = (rect.left + rect.width / 2 + 10) + "px";
+      noBtn.style.top = (rect.top + 5) + "px";
+    }
+
     function openDoor() {
       const bgMusic = document.getElementById("bg-music");
-      const door = document.getElementById("door-overlay");
-      const content = document.getElementById("main-content");
-
-      bgMusic.volume = 0.5; 
-      bgMusic.play().catch(e => console.log("Music blocked"));
-
-      door.style.opacity = "0";
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(() => {});
+      
+      document.getElementById("door-overlay").style.opacity = "0";
       setTimeout(() => {
-        door.style.visibility = "hidden";
-        content.classList.add("animate-pop");
+        document.getElementById("door-overlay").style.visibility = "hidden";
+        document.getElementById("main-content").classList.add("animate-pop");
+        // Re-calculate initial position in case screen resized
+        initNoButton();
       }, 600);
+    }
+
+    function moveButton(e) {
+      if (e) e.preventDefault();
+
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+
+      // iPhone 16 Pro Safe Zones
+      const topPadding = 100;    // Keeps it clear of the Dynamic Island
+      const bottomPadding = 80;  // Keeps it clear of the Home Bar
+      const sidePadding = 30;    // Keeps it clear of the curved edges
+
+      // Calculate available range
+      const availableWidth = window.innerWidth - btnWidth - (sidePadding * 2);
+      const availableHeight = window.innerHeight - btnHeight - topPadding - bottomPadding;
+
+      // Generate random position within safe zone
+      const newX = Math.floor(Math.random() * availableWidth) + sidePadding;
+      const newY = Math.floor(Math.random() * availableHeight) + topPadding;
+
+      noBtn.style.left = newX + "px";
+      noBtn.style.top = newY + "px";
     }
 
     function yesClicked() {
       const content = document.getElementById("main-content");
-      content.classList.remove("animate-pop");
-      void content.offsetWidth; 
-
+      noBtn.style.display = "none"; // Hide the pesky button
+      
       content.innerHTML = `
         <h1 style="color:#006d6d;">Jin-jja-yo?<br>Jo-a-yo!</h1>
-        <p><a href="https://discord.com/users/dabrondawg" class="discord-link" target="_blank">Really?<br>I'm glad!</a></p>
+        <p><a href="https://discord.com/users/dabrondawg" style="color:#00796b; font-weight:bold;" target="_blank">Really?<br>I'm glad!</a></p>
       `;
-      
-      content.classList.add("animate-pop");
       setInterval(createHeart, 250);
-    }
-
-    function moveButton(event) {
-      // Prevent default behavior (like zooming on double tap)
-      if (event) event.preventDefault();
-
-      const button = document.getElementById("no");
-      
-      // Safe padding to avoid the iPhone Dynamic Island and edges (approx 60px)
-      const safePadding = 60; 
-      
-      // Calculate available space
-      const maxX = window.innerWidth - button.offsetWidth - safePadding;
-      const maxY = window.innerHeight - button.offsetHeight - safePadding;
-
-      // Ensure button is switched to fixed position once it moves
-      button.style.position = "fixed";
-      button.style.margin = "0";
-
-      // Calculate random positions starting from safePadding to avoid top/left edges
-      const newX = Math.floor(Math.random() * (maxX - safePadding + 1)) + safePadding;
-      const newY = Math.floor(Math.random() * (maxY - safePadding + 1)) + safePadding;
-
-      button.style.left = newX + "px";
-      button.style.top = newY + "px";
     }
 
     function createHeart() {
       const heart = document.createElement("div");
-      heart.classList.add("heart");
-      const heartType = Math.random() > 0.5 ? "💗" : "🤍";
-      heart.innerHTML = heartType;
+      heart.className = "heart";
+      heart.innerHTML = Math.random() > 0.5 ? "💗" : "🤍";
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.top = "100vh";
       heart.style.fontSize = (Math.random() * 20 + 20) + "px";
@@ -222,6 +203,5 @@
       setTimeout(() => heart.remove(), 4000);
     }
   </script>
-
 </body>
 </html>
