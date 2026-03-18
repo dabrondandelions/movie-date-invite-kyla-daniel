@@ -1,111 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Movie Date? 🎬💖</title>
-
-<!-- Calligraphy Font -->
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-
-<style>
-  body {
-    margin: 0;
-    height: 100vh;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    /* Background image */
-    background: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4') no-repeat center center/cover;
-
-    /* Teal overlay */
-    background-color: rgba(0, 128, 128, 0.6);
-    background-blend-mode: overlay;
-
-    color: white;
-  }
-
-  h1 {
-    font-family: 'Great Vibes', cursive;
-    font-size: 3em;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-  }
-
-  .buttons {
-    position: relative;
-  }
-
-  button {
-    padding: 15px 25px;
-    font-size: 18px;
-    margin: 10px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  /* YES button grows slowly */
-  #yes {
-    background-color: #20c997;
-    color: white;
-    animation: grow 2s infinite alternate;
-  }
-
-  @keyframes grow {
-    from { transform: scale(1); }
-    to { transform: scale(1.2); }
-  }
-
-  /* NO button */
-  #no {
-    background-color: #6c757d;
-    color: white;
-    position: absolute;
-  }
-
-</style>
+  <meta charset="UTF-8">
+  <title>Movie Date?</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #ffe6f0;
+      margin-top: 100px;
+    }
+    h1 {
+      font-size: 2.5em;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 18px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #yes {
+      background-color: #ff66a3;
+      color: white;
+    }
+    #no {
+      background-color: #ccc;
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>Would you like to watch a movie with me, Kyla? 🎬💖</h1>
+<h1>hi, Kyla</h1>
+<p>Would you like to watch a movie with me?</p>
 
-<div class="buttons">
-  <button id="yes" onclick="yesClicked()">Yes 😍</button>
-  <button id="no">No 😢</button>
-</div>
+<button id="yes" onclick="yesClicked()">Yes</button>
+<button id="no" onmouseover="moveButton()">No</button>
 
 <script>
-const noBtn = document.getElementById("no");
-
-document.addEventListener("mousemove", (e) => {
-  const rect = noBtn.getBoundingClientRect();
-
-  const distance = Math.hypot(
-    e.clientX - (rect.left + rect.width / 2),
-    e.clientY - (rect.top + rect.height / 2)
-  );
-
-  // If cursor gets close → move button away
-  if (distance < 100) {
-    const x = Math.random() * (window.innerWidth - rect.width);
-    const y = Math.random() * (window.innerHeight - rect.height);
-
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  }
-});
-
 function yesClicked() {
-  document.body.innerHTML = `
-    <h1 style="font-family: 'Great Vibes', cursive; font-size: 3em;">
-      YAY!! 💖 See you at the movies! 🎬🍿
-    </h1>
-  `;
+  document.body.innerHTML = "<h1>kamsahamnida~</h1>";
+}
+
+function moveButton() {
+  const button = document.getElementById("no");
+  button.style.position = "absolute";
+  button.style.top = Math.random() * window.innerHeight + "px";
+  button.style.left = Math.random() * window.innerWidth + "px";
 }
 </script>
 
