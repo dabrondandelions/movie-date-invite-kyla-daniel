@@ -97,15 +97,16 @@
       touch-action: manipulation;
     }
 
+    /* ✅ Increased spacing */
     #yes {
-      left: calc(50% - 90px);
+      left: calc(50% - 110px);
       background-color: #00a8a8;
       color: white;
       z-index: 10;
     }
 
     #no {
-      left: calc(50% + 10px);
+      left: calc(50% + 30px);
       background-color: #b2dfdb;
       color: #004c4c;
       z-index: 50;
@@ -203,11 +204,12 @@
         return;
       }
 
-      // Move anywhere on screen
       const padding = 10;
 
       const maxX = window.innerWidth - button.offsetWidth - padding;
-      const maxY = window.innerHeight - button.offsetHeight - padding;
+
+      // ✅ Prevent going too low
+      const maxY = window.innerHeight - button.offsetHeight - 80;
 
       const newX = Math.random() * maxX;
       const newY = Math.random() * maxY;
