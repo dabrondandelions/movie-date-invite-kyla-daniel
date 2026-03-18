@@ -26,7 +26,6 @@
       background-size: cover;
     }
 
-    /* Envelope Overlay */
     #door-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -94,26 +93,26 @@
       cursor: pointer;
       font-weight: bold;
       touch-action: manipulation;
+      position: absolute;
     }
 
-    /* YES button */
     #yes { 
       background-color: #00a8a8; 
       color: white; 
       z-index: 10;
-      transform: translateX(-60px); /* start left of center */
+      left: 20%; /* start 20% from left of container */
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
 
-    /* NO button */
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(60px, -50%); /* start right of center, perfectly symmetrical */
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 50;
+      left: 80%; /* start 20% from right of container for symmetry */
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .heart {
@@ -186,19 +185,19 @@
       setInterval(createHeart, 250);
     }
 
-    /* NO button movement with larger roaming area */
     function moveButton(event) {
       if (event) event.preventDefault();
 
       const button = document.getElementById("no");
       const container = document.querySelector(".btn-container");
 
-      // Larger area for movement around center
-      const maxX = container.offsetWidth / 2 - button.offsetWidth - 10; 
-      const maxY = container.offsetHeight / 2 - button.offsetHeight - 10;
+      // Allow movement around all directions
+      const padding = 10;
+      const maxX = container.offsetWidth - button.offsetWidth - padding;
+      const maxY = container.offsetHeight - button.offsetHeight - padding;
 
-      const newX = (Math.random() - 0.5) * 2 * maxX; // can go left/right
-      const newY = (Math.random() - 0.5) * 2 * maxY; // can go up/down
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
 
       button.style.transform = `translate(${newX}px, ${newY}px)`;
     }
