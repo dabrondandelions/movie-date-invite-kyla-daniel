@@ -83,7 +83,7 @@
       margin-top: 20px;
     }
 
-    /* Buttons */
+    /* Symmetrical buttons */
     #yes, #no {
       position: absolute;
       top: 50%;
@@ -97,16 +97,15 @@
       touch-action: manipulation;
     }
 
-    /* ✅ Better spacing */
     #yes {
-      left: calc(50% - 110px);
+      left: calc(50% - 90px);
       background-color: #00a8a8;
       color: white;
       z-index: 10;
     }
 
     #no {
-      left: calc(50% + 30px);
+      left: calc(50% + 10px);
       background-color: #b2dfdb;
       color: #004c4c;
       z-index: 50;
@@ -204,11 +203,10 @@
         return;
       }
 
+      // Move anywhere on screen
       const padding = 10;
 
       const maxX = window.innerWidth - button.offsetWidth - padding;
-
-      // ✅ STRICT boundary (never below screen)
       const maxY = window.innerHeight - button.offsetHeight - padding;
 
       const newX = Math.random() * maxX;
