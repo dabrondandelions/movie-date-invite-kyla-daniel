@@ -15,8 +15,8 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      min-height: 100vh; /* Vital for mobile background visibility */
-      overflow-x: hidden; /* Prevent horizontal side-scrolling */
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     body {
@@ -26,22 +26,55 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
-      /* Fixed Teal Gradient */
       background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
       background-attachment: fixed;
       background-size: cover;
     }
 
-    /* Content overlay that lets the background show through */
+    /* The "Door" / Envelope Overlay */
+    #door-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #00796b;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      cursor: pointer;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
+
+    #door-overlay h2 {
+      color: white;
+      margin-top: 20px;
+      font-weight: 300;
+    }
+
+    .envelope-icon {
+      font-size: 80px;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
+    }
+
+    /* Content overlay */
     .content-overlay {
-        background-color: rgba(255, 255, 255, 0.85); /* Slightly less transparent for better text contrast */
-        padding: 40px 20px;
-        border-radius: 30px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        width: 85%; /* Ensures the teal background is visible on the sides */
-        max-width: 400px; /* Keeps it from getting too wide on tablets */
-        z-index: 10;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 40px 20px;
+      border-radius: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 85%;
+      max-width: 400px;
+      z-index: 10;
+      display: none; /* Hidden until door opens */
     }
 
     h1 {
@@ -92,7 +125,7 @@
     }
 
     .heart {
-      position: fixed; /* Changed to fixed so they float over everything */
+      position: fixed;
       font-size: 25px;
       pointer-events: none;
       animation: floatUp 3s linear forwards;
@@ -105,72 +138,92 @@
     }
   </style>
 </head>
-
 <body>
 
-<div id="main-content" class="content-overlay">
-  <h1>hi, Kyla</h1>
-  <p>Would you like to watch a movie with me?</p>
-
-  <div class="btn-container">
-    <button id="yes" onclick="yesClicked()">Yes</button>
-    <button id="no" ontouchstart="moveButton(event)" onmouseover="moveButton(event)">No</button>
+  <div id="door-overlay" onclick="openDoor()">
+    <div class="envelope-icon">💌</div>
+    <h2>You have a message...</h2>
+    <p style="color: #b2dfdb;">(Tap to open)</p>
   </div>
-</div>
 
-<audio id="sound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3" preload="auto"></audio>
+  <div id="main-content" class="content-overlay">
+    <h1>hi, Kyla</h1>
+    <p>Would you like to watch a movie with me?</p>
 
-<script>
-function yesClicked() {
-  const sound = document.getElementById("sound");
-  sound.play().catch(e => console.log("Audio play blocked until interaction"));
+    <div class="btn-container">
+      <button id="yes" onclick="yesClicked()">Yes</button>
+      <button id="no" ontouchstart="moveButton(event)" onmouseover="moveButton(event)">No</button>
+    </div>
+  </div>
 
-  document.getElementById("main-content").innerHTML = `
-    <h1 style="color:#006d6d;">kamsahamnida~ 💖</h1>
-    <p>See you soon!</p>
-  `;
+  <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
+  <audio id="sound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3" preload="auto"></audio>
 
-  setInterval(createHeart, 300);
-}
+  <script>
+    function openDoor() {
+      const bgMusic = document.getElementById("bg-music");
+      const door = document.getElementById("door-overlay");
+      const content = document.getElementById("main-content");
 
-function moveButton(event) {
-  // Prevent the "No" button from triggering a click event on mobile
-  if (event.type === 'touchstart') {
-    event.preventDefault();
-  }
+      // Play music (interaction allows this now)
+      bgMusic.volume = 0.5; 
+      bgMusic.play().catch(e => console.log("Music play blocked"));
 
-  const button = document.getElementById("no");
-  
-  // Constrain movement to the visible screen area
-  const padding = 50;
-  const maxX = window.innerWidth - button.offsetWidth - padding;
-  const maxY = window.innerHeight - button.offsetHeight - padding;
+      // Fade out the door
+      door.style.opacity = "0";
+      setTimeout(() => {
+        door.style.visibility = "hidden";
+        content.style.display = "block";
+      }, 800);
+    }
 
-  button.style.position = "fixed";
-  
-  const newX = Math.max(padding, Math.random() * maxX);
-  const newY = Math.max(padding, Math.random() * maxY);
+    function yesClicked() {
+      const sound = document.getElementById("sound");
+      sound.play().catch(e => console.log("Sound effect blocked"));
 
-  button.style.left = newX + "px";
-  button.style.top = newY + "px";
-}
+      document.getElementById("main-content").innerHTML = `
+        <h1 style="color:#006d6d;">kamsahamnida~ 💖</h1>
+        <p>See you soon!</p>
+      `;
 
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "💖";
+      setInterval(createHeart, 300);
+    }
 
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.top = "100vh";
-  heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+    function moveButton(event) {
+      if (event.type === 'touchstart') {
+        event.preventDefault();
+      }
 
-  document.body.appendChild(heart);
+      const button = document.getElementById("no");
+      const padding = 50;
+      const maxX = window.innerWidth - button.offsetWidth - padding;
+      const maxY = window.innerHeight - button.offsetHeight - padding;
 
-  setTimeout(() => {
-    heart.remove();
-  }, 3000);
-}
-</script>
+      button.style.position = "fixed";
+      
+      const newX = Math.max(padding, Math.random() * maxX);
+      const newY = Math.max(padding, Math.random() * maxY);
+
+      button.style.left = newX + "px";
+      button.style.top = newY + "px";
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "💖";
+
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.top = "100vh";
+      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 3000);
+    }
+  </script>
 
 </body>
 </html>
