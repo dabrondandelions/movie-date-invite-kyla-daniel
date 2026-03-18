@@ -18,78 +18,44 @@
       align-items: center;
       height: 100vh;
       overflow: hidden;
-      animation: fadeIn 1s ease;
     }
 
     h1 {
-      font-size: 2em;
       color: #006d6d;
-      animation: popIn 1s ease;
     }
 
     p {
-      font-size: 1.2em;
       color: #004c4c;
-      animation: fadeIn 2s ease;
+    }
+
+    .buttons {
+      position: relative;
+      width: 100%;
+      max-width: 300px;
+      height: 150px;
     }
 
     button {
-      padding: 12px 20px;
+      padding: 14px 22px;
       font-size: 16px;
-      margin: 10px;
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      transition: 0.2s;
+      position: absolute;
     }
 
     #yes {
       background-color: #00a8a8;
       color: white;
-    }
-
-    #yes:hover {
-      transform: scale(1.1);
-    }
-
-    #yes:active {
-      transform: scale(0.9);
+      left: 20px;
+      top: 50px;
     }
 
     #no {
       background-color: #b2dfdb;
       color: #004c4c;
-      position: relative;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-
-    @keyframes popIn {
-      0% {transform: scale(0.5); opacity: 0;}
-      100% {transform: scale(1); opacity: 1;}
-    }
-
-    /* Hearts */
-    .heart {
-      position: absolute;
-      color: #ff4d6d;
-      font-size: 20px;
-      animation: floatUp 3s linear forwards;
-    }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-200px) scale(1.5);
-        opacity: 0;
-      }
+      right: 20px;
+      top: 50px;
     }
   </style>
 </head>
@@ -99,46 +65,46 @@
 <h1>hi, Kyla</h1>
 <p>Would you like to watch a movie with me?</p>
 
-<button id="yes" onclick="yesClicked()">Yes</button>
-<button id="no" ontouchstart="moveButton()" onmouseover="moveButton()">No</button>
+<div class="buttons">
+  <button id="yes" onclick="yesClicked()">Yes</button>
+  <button id="no" ontouchstart="moveButton()" onmouseover="moveButton()">No</button>
+</div>
 
-<!-- Sound -->
 <audio id="sound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3"></audio>
 
 <script>
 function yesClicked() {
   document.getElementById("sound").play();
-
   document.body.innerHTML = "<h1 style='color:#006d6d;'>kamsahamnida~ 💖</h1>";
-
-  // spawn hearts
-  setInterval(createHeart, 300);
 }
 
 function moveButton() {
-  const button = document.getElementById("no");
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const container = document.querySelector(".buttons");
 
-  const maxX = window.innerWidth - button.offsetWidth;
-  const maxY = window.innerHeight - button.offsetHeight;
+  const maxX = container.clientWidth - noBtn.offsetWidth;
+  const maxY = container.clientHeight - noBtn.offsetHeight;
 
-  button.style.position = "absolute";
-  button.style.left = Math.random() * maxX + "px";
-  button.style.top = Math.random() * maxY + "px";
-}
+  let newX, newY;
+  let safeDistance = 100; // minimum distance from YES button
 
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "💖";
+  do {
+    newX = Math.random() * maxX;
+    newY = Math.random() * maxY;
 
-  heart.style.left = Math.random() * window.innerWidth + "px";
-  heart.style.top = window.innerHeight + "px";
+    const yesRect = yesBtn.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
 
-  document.body.appendChild(heart);
+    const yesX = yesRect.left - containerRect.left;
+    const yesY = yesRect.top - containerRect.top;
 
-  setTimeout(() => {
-    heart.remove();
-  }, 3000);
+    var distance = Math.hypot(newX - yesX, newY - yesY);
+
+  } while (distance < safeDistance);
+
+  noBtn.style.left = newX + "px";
+  noBtn.style.top = newY + "px";
 }
 </script>
 
