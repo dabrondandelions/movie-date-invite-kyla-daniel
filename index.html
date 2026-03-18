@@ -1,231 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Movie Date?</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Movie Date?</title>
 
-  <style>
-    * { box-sizing: border-box; }
+  <style>
+    * { box-sizing: border-box; }
 
-    html, body {
-      margin: 0; padding: 0;
-      width: 100%; min-height: 100vh;
-      overflow: hidden; 
-    }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; min-height: 100vh;
+      overflow: hidden; 
+    }
 
-    body {
-      text-align: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
-      background-attachment: fixed;
-      background-size: cover;
-    }
+    body {
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
+      background-attachment: fixed;
+      background-size: cover;
+    }
 
-    /* Envelope Overlay */
-    #door-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #00796b;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      cursor: pointer;
-      transition: opacity 0.8s ease, visibility 0.8s;
-    }
+    /* Envelope Overlay */
+    #door-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #00796b;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      cursor: pointer;
+      transition: opacity 0.8s ease, visibility 0.8s;
+    }
 
-    #door-overlay h2 { color: white; margin-top: 20px; font-weight: 300; }
-    .envelope-icon { font-size: 80px; animation: bounce 2s infinite; }
+    #door-overlay h2 { color: white; margin-top: 20px; font-weight: 300; }
+    .envelope-icon { font-size: 80px; animation: bounce 2s infinite; }
 
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-      40% {transform: translateY(-20px);}
-      60% {transform: translateY(-10px);}
-    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
+    }
 
-    .content-overlay {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 40px 20px;
-      border-radius: 30px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      width: 85%;
-      max-width: 400px;
-      z-index: 10;
-      display: none; 
-      position: relative;
-    }
+    .content-overlay {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 40px 20px;
+      border-radius: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 85%;
+      max-width: 400px;
+      z-index: 10;
+      display: none; 
+      position: relative;
+    }
 
-    .animate-pop {
-      display: block !important;
-      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
+    .animate-pop {
+      display: block !important;
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
 
-    @keyframes popIn {
-      0% { opacity: 0; transform: scale(0.5); }
-      70% { transform: scale(1.05); }
-      100% { opacity: 1; transform: scale(1); }
-    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      70% { transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
 
-    h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
-    p { font-size: 1.1em; color: #004c4c; }
-    
-    .btn-container {
-      height: 100px;
-      width: 100%;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-    }
+    h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
+    p { font-size: 1.1em; color: #004c4c; }
+    
+    .btn-container {
+      height: 100px;
+      width: 100%;
+      position: relative;
+      margin-top: 20px;
+    }
 
-    button {
-      padding: 15px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: bold;
-      touch-action: manipulation;
-    }
+    /* Symmetrical buttons */
+    #yes, #no {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      touch-action: manipulation;
+    }
 
-    #yes { 
-      background-color: #00a8a8; 
-      color: white; 
-      z-index: 10;
-      /* Keep Yes exactly in the middle */
-      transform: translateX(-55px); 
-    }
+    #yes {
+      left: calc(50% - 90px);
+      background-color: #00a8a8;
+      color: white;
+      z-index: 10;
+    }
 
-    #no { 
-      background-color: #b2dfdb; 
-      color: #004c4c; 
-      position: absolute;
-      /* Initial position next to Yes */
-      left: calc(50% + 5px);
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 50;
-    }
+    #no {
+      left: calc(50% + 10px);
+      background-color: #b2dfdb;
+      color: #004c4c;
+      z-index: 50;
+      transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-    .heart {
-      position: fixed;
-      font-size: 25px;
-      pointer-events: none;
-      animation: floatUp 3.5s linear forwards;
-      z-index: 100;
-    }
+    .heart {
+      position: fixed;
+      font-size: 25px;
+      pointer-events: none;
+      animation: floatUp 3.5s linear forwards;
+      z-index: 100;
+    }
 
-    @keyframes floatUp {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
-    }
-  </style>
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
 </head>
 <body>
 
-  <div id="door-overlay" onclick="openDoor()">
-    <div class="envelope-icon">💌</div>
-    <h2>You have a message...</h2>
-    <p style="color: #b2dfdb;">(Tap to open)</p>
-  </div>
+  <div id="door-overlay" onclick="openDoor()">
+    <div class="envelope-icon">💌</div>
+    <h2>You have a message...</h2>
+    <p style="color: #b2dfdb;">(Tap to open)</p>
+  </div>
 
-  <div id="main-content" class="content-overlay">
-    <h1>hi, Kyla</h1>
-    <p>Would you like to watch a movie with me?</p>
+  <div id="main-content" class="content-overlay">
+    <h1>hi, Kyla</h1>
+    <p>Would you like to watch a movie with me?</p>
 
-    <div class="btn-container">
-      <button id="yes" onclick="yesClicked()">Yes</button>
-      <button id="no" 
-              onmouseover="moveButton()" 
-              onclick="moveButton()"
-              ontouchstart="moveButton(event)">No</button>
-    </div>
-  </div>
+    <div class="btn-container">
+      <button id="yes" onclick="yesClicked()">Yes</button>
+      <button id="no"
+              onmouseover="moveButton()"
+              onclick="moveButton()"
+              ontouchstart="moveButton(event)">No</button>
+    </div>
+  </div>
 
-  <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
+  <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
 
-  <script>
-    let hasMoved = false;
+  <script>
+    let hasMoved = false;
 
-    function openDoor() {
-      const bgMusic = document.getElementById("bg-music");
-      const door = document.getElementById("door-overlay");
-      const content = document.getElementById("main-content");
+    function openDoor() {
+      const bgMusic = document.getElementById("bg-music");
+      const door = document.getElementById("door-overlay");
+      const content = document.getElementById("main-content");
 
-      bgMusic.volume = 0.5; 
-      bgMusic.play().catch(e => console.log("Music blocked"));
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(e => console.log("Music blocked"));
 
-      door.style.opacity = "0";
-      setTimeout(() => {
-        door.style.visibility = "hidden";
-        content.classList.add("animate-pop");
-      }, 600);
-    }
+      door.style.opacity = "0";
+      setTimeout(() => {
+        door.style.visibility = "hidden";
+        content.classList.add("animate-pop");
+      }, 600);
+    }
 
-    function yesClicked() {
-      const content = document.getElementById("main-content");
-      const noBtn = document.getElementById("no");
-      noBtn.style.display = "none";
-      
-      content.classList.remove("animate-pop");
-      void content.offsetWidth; 
+    function yesClicked() {
+      const content = document.getElementById("main-content");
+      const noBtn = document.getElementById("no");
+      noBtn.style.display = "none";
 
-      content.innerHTML = `
-        <h1 style="color:#006d6d;">Jin-jja-yo?<br>Jo-a-yo!</h1>
-        <p><a href="https://discord.com/users/dabrondawg" style="color:#00796b; font-weight:bold; text-decoration:underline;" target="_blank">Really?<br>I'm glad!</a></p>
-      `;
-      
-      content.classList.add("animate-pop");
-      setInterval(createHeart, 250);
-    }
+      content.classList.remove("animate-pop");
+      void content.offsetWidth;
 
-    function moveButton(event) {
-      if (event) event.preventDefault();
-      const button = document.getElementById("no");
+      content.innerHTML = `
+        <h1 style="color:#006d6d;">Jin-jja-yo?<br>Jo-a-yo!</h1>
+        <p><a href="https://discord.com/users/dabrondawg" style="color:#00796b; font-weight:bold; text-decoration:underline;" target="_blank">Really?<br>I'm glad!</a></p>
+      `;
 
-      // Switch to fixed positioning on first interaction to allow screen-wide movement
-      if (!hasMoved) {
-        const rect = button.getBoundingClientRect();
-        button.style.left = rect.left + "px";
-        button.style.top = rect.top + "px";
-        button.style.position = "fixed";
-        button.style.margin = "0";
-        hasMoved = true;
-      }
+      content.classList.add("animate-pop");
+      setInterval(createHeart, 250);
+    }
 
-      // Define center area boundaries (center 50% of screen)
-      const padding = 20;
-      const minX = window.innerWidth * 0.2;
-      const maxX = window.innerWidth * 0.8 - button.offsetWidth;
-      const minY = window.innerHeight * 0.3;
-      const maxY = window.innerHeight * 0.7 - button.offsetHeight;
+    function moveButton(event) {
+      if (event) event.preventDefault();
+      const button = document.getElementById("no");
 
-      // Calculate new position
-      let newX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-      let newY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+      // FIRST MOVE: prevent teleport
+      if (!hasMoved) {
+        const rect = button.getBoundingClientRect();
 
-      button.style.left = newX + "px";
-      button.style.top = newY + "px";
-    }
+        button.style.position = "fixed";
+        button.style.left = rect.left + "px";
+        button.style.top = rect.top + "px";
+        button.style.transform = "none";
+        button.style.margin = "0";
 
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.innerHTML = Math.random() > 0.5 ? "💗" : "🤍";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.top = "100vh";
-      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-      document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 4000);
-    }
-  </script>
+        hasMoved = true;
+        return;
+      }
+
+      // Move anywhere on screen
+      const padding = 10;
+
+      const maxX = window.innerWidth - button.offsetWidth - padding;
+      const maxY = window.innerHeight - button.offsetHeight - padding;
+
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
+
+      button.style.left = newX + "px";
+      button.style.top = newY + "px";
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = Math.random() > 0.5 ? "💗" : "🤍";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.top = "100vh";
+      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
+    }
+  </script>
 
 </body>
 </html>
