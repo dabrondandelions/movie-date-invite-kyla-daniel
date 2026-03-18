@@ -96,7 +96,7 @@
       position: absolute;
     }
 
-    /* Yes button: 30% from left side of content overlay */
+    /* Yes button: 30% from left */
     #yes { 
       background-color: #00a8a8; 
       color: white; 
@@ -106,7 +106,7 @@
       transform: translate(-50%, -50%);
     }
 
-    /* No button: 30% from right side of content overlay */
+    /* No button: 30% from right initially */
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
@@ -114,7 +114,7 @@
       left: 70%;
       top: 50%;
       transform: translate(-50%, -50%);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .heart {
@@ -187,28 +187,24 @@
       setInterval(createHeart, 250);
     }
 
+    // No button moves inside content overlay only
     function moveButton(event) {
       if (event) event.preventDefault();
 
       const button = document.getElementById("no");
-      const content = document.getElementById("main-content");
+      const container = document.getElementById("main-content");
 
-      // Get caption box boundaries
-      const rect = content.getBoundingClientRect();
+      const rect = container.getBoundingClientRect();
 
-      // Small roaming area around caption box (can go slightly outside)
-      const maxOffsetX = rect.width * 0.3;  // 30% of caption width
-      const maxOffsetY = rect.height * 0.3; // 30% of caption height
+      // Calculate max/min position inside container
+      const maxX = rect.width - button.offsetWidth - 10;
+      const maxY = rect.height - button.offsetHeight - 10;
 
-      // Random offset from center of button relative to caption
-      const offsetX = (Math.random() - 0.5) * 2 * maxOffsetX;
-      const offsetY = (Math.random() - 0.5) * 2 * maxOffsetY;
+      // Random position inside container
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
 
-      // Calculate final position relative to button's current left/top
-      const baseX = rect.left + rect.width * 0.7 - button.offsetLeft; // start from initial left
-      const baseY = rect.top + rect.height / 2 - button.offsetTop;    // start from vertical center
-
-      button.style.transform = `translate(${baseX + offsetX}px, ${baseY + offsetY}px)`;
+      button.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     function createHeart() {
