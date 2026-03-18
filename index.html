@@ -56,10 +56,11 @@
       border-radius: 30px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       width: 85%;
-      max-width: 400px;
+      max-width: 500px;
       z-index: 10;
       display: none; 
       position: relative;
+      min-height: 300px;
     }
 
     .animate-pop {
@@ -77,12 +78,9 @@
     p { font-size: 1.1em; color: #004c4c; }
     
     .btn-container {
-      height: 100px;
+      height: 150px;
       width: 100%;
       position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       margin-top: 20px;
     }
 
@@ -94,23 +92,25 @@
       cursor: pointer;
       font-weight: bold;
       touch-action: manipulation;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     #yes { 
       background-color: #00a8a8; 
       color: white; 
+      left: 30%;
+      transform: translate(-50%, -50%);
       z-index: 10;
-      /* Keep Yes exactly in the middle */
-      transform: translateX(-55px); 
     }
 
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
-      position: absolute;
-      /* Initial position next to Yes */
-      left: calc(50% + 5px);
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      right: 30%;
+      transform: translate(50%, -50%);
+      transition: all 0.2s ease-out;
       z-index: 50;
     }
 
@@ -171,18 +171,10 @@
 
     function yesClicked() {
       const content = document.getElementById("main-content");
-      const noBtn = document.getElementById("no");
-      noBtn.style.display = "none";
-      
-      content.classList.remove("animate-pop");
-      void content.offsetWidth; 
-
       content.innerHTML = `
         <h1 style="color:#006d6d;">Jin-jja-yo?<br>Jo-a-yo!</h1>
         <p><a href="https://discord.com/users/dabrondawg" style="color:#00796b; font-weight:bold; text-decoration:underline;" target="_blank">Really?<br>I'm glad!</a></p>
       `;
-      
-      content.classList.add("animate-pop");
       setInterval(createHeart, 250);
     }
 
@@ -190,24 +182,28 @@
       if (event) event.preventDefault();
       const button = document.getElementById("no");
 
-      // Switch to fixed positioning on first interaction to allow screen-wide movement
       if (!hasMoved) {
-        const rect = button.getBoundingClientRect();
-        button.style.left = rect.left + "px";
-        button.style.top = rect.top + "px";
         button.style.position = "fixed";
         button.style.margin = "0";
+        // Reset transform so placement is based on Top/Left strictly
+        button.style.transform = "none";
         hasMoved = true;
       }
 
-      // Define center area boundaries (center 50% of screen)
-      const padding = 20;
-      const minX = window.innerWidth * 0.2;
-      const maxX = window.innerWidth * 0.8 - button.offsetWidth;
-      const minY = window.innerHeight * 0.3;
-      const maxY = window.innerHeight * 0.7 - button.offsetHeight;
+      // 2:3 Ratio Box Logic (Centered)
+      // We'll define a box where height is 1.5x the width (3/2)
+      const boxWidth = window.innerWidth * 0.4; // 40% of screen width
+      const boxHeight = boxWidth * 1.5; 
+      
+      // Ensure box doesn't exceed screen height
+      const finalHeight = Math.min(boxHeight, window.innerHeight * 0.8);
+      const finalWidth = finalHeight * (2/3);
 
-      // Calculate new position
+      const minX = (window.innerWidth - finalWidth) / 2;
+      const maxX = minX + finalWidth - button.offsetWidth;
+      const minY = (window.innerHeight - finalHeight) / 2;
+      const maxY = minY + finalHeight - button.offsetHeight;
+
       let newX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
       let newY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
