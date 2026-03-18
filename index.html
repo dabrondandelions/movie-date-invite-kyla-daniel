@@ -193,19 +193,22 @@
       const button = document.getElementById("no");
       const content = document.getElementById("main-content");
 
-      // Calculate center of caption box
+      // Get caption box boundaries
       const rect = content.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
 
-      // Allow movement around caption (small margin outside)
-      const rangeX = rect.width / 1.5; // ~60% of caption width
-      const rangeY = rect.height / 1.5; // ~60% of caption height
+      // Small roaming area around caption box (can go slightly outside)
+      const maxOffsetX = rect.width * 0.3;  // 30% of caption width
+      const maxOffsetY = rect.height * 0.3; // 30% of caption height
 
-      const newX = centerX + (Math.random() - 0.5) * rangeX;
-      const newY = centerY + (Math.random() - 0.5) * rangeY;
+      // Random offset from center of button relative to caption
+      const offsetX = (Math.random() - 0.5) * 2 * maxOffsetX;
+      const offsetY = (Math.random() - 0.5) * 2 * maxOffsetY;
 
-      button.style.transform = `translate(${newX - button.offsetLeft}px, ${newY - button.offsetTop}px)`;
+      // Calculate final position relative to button's current left/top
+      const baseX = rect.left + rect.width * 0.7 - button.offsetLeft; // start from initial left
+      const baseY = rect.top + rect.height / 2 - button.offsetTop;    // start from vertical center
+
+      button.style.transform = `translate(${baseX + offsetX}px, ${baseY + offsetY}px)`;
     }
 
     function createHeart() {
