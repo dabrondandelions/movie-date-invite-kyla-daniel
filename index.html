@@ -6,16 +6,11 @@
   <title>Movie Date?</title>
 
   <style>
-    /* Reset and ensure full height */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100vh;
+      margin: 0; padding: 0;
+      width: 100%; min-height: 100vh;
       overflow-x: hidden;
     }
 
@@ -31,13 +26,11 @@
       background-size: cover;
     }
 
-    /* The "Door" / Envelope Overlay */
+    /* Envelope Overlay */
     #door-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: #00796b;
       display: flex;
       flex-direction: column;
@@ -48,11 +41,7 @@
       transition: opacity 0.8s ease, visibility 0.8s;
     }
 
-    #door-overlay h2 {
-      color: white;
-      margin-top: 20px;
-      font-weight: 300;
-    }
+    #door-overlay h2 { color: white; margin-top: 20px; font-weight: 300; }
 
     .envelope-icon {
       font-size: 80px;
@@ -65,9 +54,20 @@
       60% {transform: translateY(-10px);}
     }
 
-    /* Content overlay */
+    /* --- ANIMATIONS --- */
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      70% { transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes successPop {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     .content-overlay {
-      background-color: rgba(255, 255, 255, 0.85);
+      background-color: rgba(255, 255, 255, 0.9);
       padding: 40px 20px;
       border-radius: 30px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -77,17 +77,18 @@
       display: none; 
     }
 
-    h1 {
-      font-size: 2.2em;
-      color: #006d6d;
-      margin-top: 0;
-      margin-bottom: 10px;
+    /* Class applied when visible */
+    .animate-pop {
+      display: block !important;
+      animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    p {
-      font-size: 1.1em;
-      color: #004c4c;
+    .success-message {
+      animation: successPop 0.5s ease-out forwards;
     }
+
+    h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
+    p { font-size: 1.1em; color: #004c4c; }
 
     .btn-container {
       height: 120px;
@@ -108,21 +109,10 @@
       cursor: pointer;
       font-weight: bold;
       touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    #yes {
-      background-color: #00a8a8;
-      color: white;
-      z-index: 11;
-    }
-
-    #no {
-      background-color: #b2dfdb;
-      color: #004c4c;
-      transition: transform 0.1s ease;
-      z-index: 11;
-    }
+    #yes { background-color: #00a8a8; color: white; }
+    #no { background-color: #b2dfdb; color: #004c4c; transition: transform 0.1s ease; }
 
     .heart {
       position: fixed;
@@ -165,37 +155,37 @@
       const content = document.getElementById("main-content");
 
       bgMusic.volume = 0.5; 
-      bgMusic.play().catch(e => console.log("Music play blocked"));
+      bgMusic.play().catch(e => console.log("Music blocked"));
 
       door.style.opacity = "0";
       setTimeout(() => {
         door.style.visibility = "hidden";
-        content.style.display = "block";
-      }, 800);
+        content.classList.add("animate-pop"); // Trigger the pop-in animation
+      }, 600);
     }
 
     function yesClicked() {
-      // Sound play line has been removed
-      document.getElementById("main-content").innerHTML = `
-        <h1 style="color:#006d6d;">kamsahamnida~ 💖</h1>
-        <p>See you soon!</p>
+      const content = document.getElementById("main-content");
+      
+      // Animate the content change
+      content.innerHTML = `
+        <div class="success-message">
+          <h1 style="color:#006d6d;">kamsahamnida~ 💖</h1>
+          <p>See you soon!</p>
+        </div>
       `;
 
       setInterval(createHeart, 300);
     }
 
     function moveButton(event) {
-      if (event.type === 'touchstart') {
-        event.preventDefault();
-      }
-
+      if (event.type === 'touchstart') event.preventDefault();
       const button = document.getElementById("no");
       const padding = 50;
       const maxX = window.innerWidth - button.offsetWidth - padding;
       const maxY = window.innerHeight - button.offsetHeight - padding;
 
       button.style.position = "fixed";
-      
       const newX = Math.max(padding, Math.random() * maxX);
       const newY = Math.max(padding, Math.random() * maxY);
 
@@ -207,16 +197,11 @@
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.innerHTML = "💖";
-
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.top = "100vh";
       heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-
       document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 3000);
+      setTimeout(() => heart.remove(), 3000);
     }
   </script>
 
