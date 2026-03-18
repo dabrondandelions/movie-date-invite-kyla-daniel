@@ -96,22 +96,22 @@
       position: absolute;
     }
 
-    /* Yes button: 35% from left side of content overlay */
+    /* Yes button: 30% from left side of content overlay */
     #yes { 
       background-color: #00a8a8; 
       color: white; 
       z-index: 10;
-      left: 35%;
+      left: 30%;
       top: 50%;
       transform: translate(-50%, -50%);
     }
 
-    /* No button: 35% from right side of content overlay initially */
+    /* No button: 30% from right side of content overlay */
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
       z-index: 50;
-      left: 65%;
+      left: 70%;
       top: 50%;
       transform: translate(-50%, -50%);
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -187,19 +187,23 @@
       setInterval(createHeart, 250);
     }
 
-    /* No button moves around center of screen */
     function moveButton(event) {
       if (event) event.preventDefault();
 
       const button = document.getElementById("no");
+      const content = document.getElementById("main-content");
 
-      // Define screen center movement area
-      const padding = 40;
-      const maxX = window.innerWidth - button.offsetWidth - padding;
-      const maxY = window.innerHeight - button.offsetHeight - padding;
+      // Calculate center of caption box
+      const rect = content.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-      const newX = Math.random() * maxX;
-      const newY = Math.random() * maxY;
+      // Allow movement around caption (small margin outside)
+      const rangeX = rect.width / 1.5; // ~60% of caption width
+      const rangeY = rect.height / 1.5; // ~60% of caption height
+
+      const newX = centerX + (Math.random() - 0.5) * rangeX;
+      const newY = centerY + (Math.random() - 0.5) * rangeY;
 
       button.style.transform = `translate(${newX - button.offsetLeft}px, ${newY - button.offsetTop}px)`;
     }
