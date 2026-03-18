@@ -96,20 +96,22 @@
       position: absolute;
     }
 
+    /* Yes button: 35% from left side of content overlay */
     #yes { 
       background-color: #00a8a8; 
       color: white; 
       z-index: 10;
-      left: 20%; /* start 20% from left of container */
+      left: 35%;
       top: 50%;
       transform: translate(-50%, -50%);
     }
 
+    /* No button: 35% from right side of content overlay initially */
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
       z-index: 50;
-      left: 80%; /* start 20% from right of container for symmetry */
+      left: 65%;
       top: 50%;
       transform: translate(-50%, -50%);
       transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -185,21 +187,21 @@
       setInterval(createHeart, 250);
     }
 
+    /* No button moves around center of screen */
     function moveButton(event) {
       if (event) event.preventDefault();
 
       const button = document.getElementById("no");
-      const container = document.querySelector(".btn-container");
 
-      // Allow movement around all directions
-      const padding = 10;
-      const maxX = container.offsetWidth - button.offsetWidth - padding;
-      const maxY = container.offsetHeight - button.offsetHeight - padding;
+      // Define screen center movement area
+      const padding = 40;
+      const maxX = window.innerWidth - button.offsetWidth - padding;
+      const maxY = window.innerHeight - button.offsetHeight - padding;
 
       const newX = Math.random() * maxX;
       const newY = Math.random() * maxY;
 
-      button.style.transform = `translate(${newX}px, ${newY}px)`;
+      button.style.transform = `translate(${newX - button.offsetLeft}px, ${newY - button.offsetTop}px)`;
     }
 
     function createHeart() {
