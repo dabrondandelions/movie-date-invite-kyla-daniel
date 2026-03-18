@@ -11,7 +11,7 @@
     html, body {
       margin: 0; padding: 0;
       width: 100%; min-height: 100vh;
-      overflow: hidden; /* Prevents accidental scrolling */
+      overflow: hidden; 
     }
 
     body {
@@ -59,6 +59,7 @@
       max-width: 400px;
       z-index: 10;
       display: none; 
+      position: relative;
     }
 
     .animate-pop {
@@ -76,7 +77,7 @@
     p { font-size: 1.1em; color: #004c4c; }
     
     .btn-container {
-      height: 120px;
+      height: 100px;
       width: 100%;
       position: relative;
       display: flex;
@@ -88,7 +89,6 @@
     button {
       padding: 15px 30px;
       font-size: 18px;
-      margin: 10px;
       border: none;
       border-radius: 50px;
       cursor: pointer;
@@ -96,14 +96,21 @@
       touch-action: manipulation;
     }
 
-    #yes { background-color: #00a8a8; color: white; }
+    #yes { 
+      background-color: #00a8a8; 
+      color: white; 
+      z-index: 10;
+      /* Keep Yes exactly in the middle */
+      transform: translateX(-55px); 
+    }
 
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
-      /* Smooth transition for movement */
-      transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                  top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: absolute;
+      /* Initial position next to Yes */
+      left: calc(50% + 5px);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 50;
     }
 
@@ -137,6 +144,7 @@
       <button id="yes" onclick="yesClicked()">Yes</button>
       <button id="no" 
               onmouseover="moveButton()" 
+              onclick="moveButton()"
               ontouchstart="moveButton(event)">No</button>
     </div>
   </div>
@@ -182,35 +190,26 @@
       if (event) event.preventDefault();
       const button = document.getElementById("no");
 
-      // FIRST TIME SETUP: Transition from stationary to moving
+      // Switch to fixed positioning on first interaction to allow screen-wide movement
       if (!hasMoved) {
         const rect = button.getBoundingClientRect();
-        // Set explicit coordinates before switching to fixed so it doesn't jump
         button.style.left = rect.left + "px";
         button.style.top = rect.top + "px";
         button.style.position = "fixed";
         button.style.margin = "0";
         hasMoved = true;
-        
-        // Brief timeout allows the browser to register the switch before moving
-        setTimeout(calculateMove, 10);
-      } else {
-        calculateMove();
       }
-    }
 
-    function calculateMove() {
-      const button = document.getElementById("no");
-      
-      /* MIDDLE OF SCREEN CONSTRAINTS (iPhone 16 Pro) */
-      // We want to keep it within the center 60% of the screen
-      const minX = window.innerWidth * 0.15;
-      const maxX = window.innerWidth * 0.85 - button.offsetWidth;
-      const minY = window.innerHeight * 0.25; // Below Dynamic Island
-      const maxY = window.innerHeight * 0.75 - button.offsetHeight; // Above Home Bar
+      // Define center area boundaries (center 50% of screen)
+      const padding = 20;
+      const minX = window.innerWidth * 0.2;
+      const maxX = window.innerWidth * 0.8 - button.offsetWidth;
+      const minY = window.innerHeight * 0.3;
+      const maxY = window.innerHeight * 0.7 - button.offsetHeight;
 
-      const newX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-      const newY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+      // Calculate new position
+      let newX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+      let newY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 
       button.style.left = newX + "px";
       button.style.top = newY + "px";
