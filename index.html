@@ -77,7 +77,7 @@
     p { font-size: 1.1em; color: #004c4c; }
     
     .btn-container {
-      height: 100px;
+      height: 120px;
       width: 100%;
       position: relative;
       display: flex;
@@ -100,17 +100,18 @@
       background-color: #00a8a8; 
       color: white; 
       z-index: 10;
-      /* Keep Yes exactly in the middle */
       transform: translateX(-55px); 
     }
 
+    /* FIXED NO BUTTON */
     #no { 
       background-color: #b2dfdb; 
       color: #004c4c; 
       position: absolute;
-      /* Initial position next to Yes */
-      left: calc(50% + 5px);
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      left: 50%;
+      top: 50%;
+      transform: translate(40px, -50%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 50;
     }
 
@@ -152,8 +153,6 @@
   <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
 
   <script>
-    let hasMoved = false;
-
     function openDoor() {
       const bgMusic = document.getElementById("bg-music");
       const door = document.getElementById("door-overlay");
@@ -186,33 +185,20 @@
       setInterval(createHeart, 250);
     }
 
+    /* FIXED MOVEMENT */
     function moveButton(event) {
       if (event) event.preventDefault();
+
       const button = document.getElementById("no");
+      const container = document.querySelector(".btn-container");
 
-      // Switch to fixed positioning on first interaction to allow screen-wide movement
-      if (!hasMoved) {
-        const rect = button.getBoundingClientRect();
-        button.style.left = rect.left + "px";
-        button.style.top = rect.top + "px";
-        button.style.position = "fixed";
-        button.style.margin = "0";
-        hasMoved = true;
-      }
+      const maxX = container.offsetWidth / 2 - button.offsetWidth;
+      const maxY = container.offsetHeight / 2 - button.offsetHeight;
 
-      // Define center area boundaries (center 50% of screen)
-      const padding = 20;
-      const minX = window.innerWidth * 0.2;
-      const maxX = window.innerWidth * 0.8 - button.offsetWidth;
-      const minY = window.innerHeight * 0.3;
-      const maxY = window.innerHeight * 0.7 - button.offsetHeight;
+      const newX = (Math.random() - 0.5) * 2 * maxX;
+      const newY = (Math.random() - 0.5) * 2 * maxY;
 
-      // Calculate new position
-      let newX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-      let newY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-
-      button.style.left = newX + "px";
-      button.style.top = newY + "px";
+      button.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     function createHeart() {
