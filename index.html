@@ -11,7 +11,7 @@
     html, body {
       margin: 0; padding: 0;
       width: 100%; min-height: 100vh;
-      overflow-x: hidden;
+      overflow: hidden; /* Prevent scrolling when button moves */
     }
 
     body {
@@ -54,7 +54,6 @@
       60% {transform: translateY(-10px);}
     }
 
-    /* --- ANIMATIONS --- */
     @keyframes popIn {
       0% { opacity: 0; transform: scale(0.5); }
       70% { transform: scale(1.05); }
@@ -80,7 +79,6 @@
     h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
     p { font-size: 1.1em; color: #004c4c; }
     
-    /* Style for the Discord Link */
     .discord-link {
       color: #00796b;
       text-decoration: underline;
@@ -109,7 +107,14 @@
     }
 
     #yes { background-color: #00a8a8; color: white; }
-    #no { background-color: #b2dfdb; color: #004c4c; transition: transform 0.1s ease; }
+    
+    /* SMOOTH MOVEMENT CSS */
+    #no { 
+      background-color: #b2dfdb; 
+      color: #004c4c; 
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy smooth transition */
+      z-index: 1001;
+    }
 
     .heart {
       position: fixed;
@@ -163,50 +168,51 @@
 
     function yesClicked() {
       const content = document.getElementById("main-content");
-      
       content.classList.remove("animate-pop");
       void content.offsetWidth; 
 
-      // Updated with new emojis and Discord link
       content.innerHTML = `
         <h1 style="color:#006d6d;">Jin-jja-yo?<br>Jo-a-yo!</h1>
         <p><a href="https://discord.com/users/dabrondawg" class="discord-link" target="_blank">Really?<br>I'm glad!</a></p>
       `;
       
       content.classList.add("animate-pop");
-
-      // Spawns hearts more frequently for a better effect
       setInterval(createHeart, 250);
     }
 
     function moveButton(event) {
+      // Prevent default touch behavior to stop accidental scrolling or clicking
       if (event.type === 'touchstart') event.preventDefault();
+      
       const button = document.getElementById("no");
-      const padding = 50;
-      const maxX = window.innerWidth - button.offsetWidth - padding;
-      const maxY = window.innerHeight - button.offsetHeight - padding;
+      
+      // Define a safe margin (padding) so it doesn't hit the screen edges/notch
+      const margin = 60; 
+      
+      // Calculate available space
+      const maxWidth = window.innerWidth - button.offsetWidth - margin;
+      const maxHeight = window.innerHeight - button.offsetHeight - margin;
 
+      // Set position to fixed so it can move anywhere on screen
       button.style.position = "fixed";
-      const newX = Math.max(padding, Math.random() * maxX);
-      const newY = Math.max(padding, Math.random() * maxY);
 
-      button.style.left = newX + "px";
-      button.style.top = newY + "px";
+      // Generate random coordinates within the "Safe Zone"
+      const randomX = Math.max(margin, Math.floor(Math.random() * maxWidth));
+      const randomY = Math.max(margin, Math.floor(Math.random() * maxHeight));
+
+      button.style.left = randomX + "px";
+      button.style.top = randomY + "px";
     }
 
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
-      
-      // Randomly choose between pink and white hearts
       const heartType = Math.random() > 0.5 ? "💗" : "🤍";
       heart.innerHTML = heartType;
-      
       heart.style.left = Math.random() * 100 + "vw";
-      heart.style.top = "100vh"; // Starts from the bottom
+      heart.style.top = "100vh";
       heart.style.fontSize = (Math.random() * 20 + 20) + "px";
       document.body.appendChild(heart);
-      
       setTimeout(() => heart.remove(), 4000);
     }
   </script>
