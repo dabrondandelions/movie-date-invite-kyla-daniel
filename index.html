@@ -17,13 +17,28 @@
     body {
       text-align: center;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #e0f7f7;
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
+      /* === START BACKGROUND IMAGE UPDATE === */
+      /* dreamy sunset background to fit the romantic theme */
+      background-image: url('https://unsplash.com/photos/silhouette-of-mountain-at-daytime-jUCQRQeRs3k');
+      background-size: cover;        /* Ensures image covers the whole screen */
+      background-position: center;  /* Centers the image */
+      background-repeat: no-repeat;
+      background-attachment: fixed; /* Extra compatibility for iOS to keep it still */
+      /* === END BACKGROUND IMAGE UPDATE === */
+    }
+
+    /* Slight tint overlay to make text more readable, especially on bright images */
+    .content-overlay {
+        background-color: rgba(255, 255, 255, 0.4); /* Adjust opacity here */
+        padding: 30px;
+        border-radius: 20px;
     }
 
     h1 {
@@ -88,7 +103,7 @@
 
 <body>
 
-<div id="main-content">
+<div id="main-content" class="content-overlay">
   <h1>hi, Kyla</h1>
   <p>Would you like to watch a movie with me?</p>
 
