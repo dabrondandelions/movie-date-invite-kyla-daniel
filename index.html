@@ -10,18 +10,23 @@
 
     html, body {
       margin: 0; padding: 0;
-      width: 100%; height: 100%;
-      overflow: hidden; /* Stops the page from bouncing/scrolling */
-      background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
+      width: 100%; min-height: 100vh;
+      overflow: hidden; /* Prevents accidental scrolling */
     }
 
     body {
+      text-align: center;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      background: radial-gradient(circle, #4db6ac 0%, #00796b 100%);
+      background-attachment: fixed;
+      background-size: cover;
     }
 
+    /* Envelope Overlay */
     #door-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -36,7 +41,9 @@
       transition: opacity 0.8s ease, visibility 0.8s;
     }
 
+    #door-overlay h2 { color: white; margin-top: 20px; font-weight: 300; }
     .envelope-icon { font-size: 80px; animation: bounce 2s infinite; }
+
     @keyframes bounce {
       0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
       40% {transform: translateY(-20px);}
@@ -49,10 +56,9 @@
       border-radius: 30px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       width: 85%;
-      max-width: 350px;
-      text-align: center;
-      display: none;
+      max-width: 400px;
       z-index: 10;
+      display: none; 
     }
 
     .animate-pop {
@@ -62,23 +68,27 @@
 
     @keyframes popIn {
       0% { opacity: 0; transform: scale(0.5); }
+      70% { transform: scale(1.05); }
       100% { opacity: 1; transform: scale(1); }
     }
 
-    h1 { font-size: 2em; color: #006d6d; margin-bottom: 10px; }
+    h1 { font-size: 2.2em; color: #006d6d; margin: 0 0 10px 0; }
     p { font-size: 1.1em; color: #004c4c; }
-
+    
     .btn-container {
-      margin-top: 30px;
+      height: 120px;
+      width: 100%;
+      position: relative;
       display: flex;
       justify-content: center;
-      gap: 20px;
-      height: 60px; /* Space for buttons */
+      align-items: center;
+      margin-top: 20px;
     }
 
     button {
       padding: 15px 30px;
       font-size: 18px;
+      margin: 10px;
       border: none;
       border-radius: 50px;
       cursor: pointer;
@@ -88,19 +98,21 @@
 
     #yes { background-color: #00a8a8; color: white; }
 
-    #no {
-      background-color: #b2dfdb;
-      color: #004c4c;
-      position: fixed; /* Fixed from the start prevents teleporting */
-      /* Smooth movement timing */
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      z-index: 999;
+    #no { 
+      background-color: #b2dfdb; 
+      color: #004c4c; 
+      /* Smooth transition for movement */
+      transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 50;
     }
 
     .heart {
       position: fixed;
+      font-size: 25px;
       pointer-events: none;
       animation: floatUp 3.5s linear forwards;
+      z-index: 100;
     }
 
     @keyframes floatUp {
@@ -109,11 +121,12 @@
     }
   </style>
 </head>
-<body onload="initNoButton()">
+<body>
 
   <div id="door-overlay" onclick="openDoor()">
     <div class="envelope-icon">💌</div>
-    <h2 style="color:white; font-weight:300;">You have a message...</h2>
+    <h2>You have a message...</h2>
+    <p style="color: #b2dfdb;">(Tap to open)</p>
   </div>
 
   <div id="main-content" class="content-overlay">
@@ -124,77 +137,88 @@
       <button id="yes" onclick="yesClicked()">Yes</button>
       <button id="no" 
               onmouseover="moveButton()" 
-              onclick="moveButton()" 
               ontouchstart="moveButton(event)">No</button>
     </div>
   </div>
 
-  <audio id="bg-music" src="sweetnightguitar.mp3" loop></audio>
+  <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
 
   <script>
-    const noBtn = document.getElementById("no");
-
-    // 1. Position the "No" button correctly on load so it doesn't jump
-    function initNoButton() {
-      const container = document.querySelector('.btn-container');
-      const rect = container.getBoundingClientRect();
-      
-      // Center it roughly next to the "Yes" button initially
-      noBtn.style.left = (rect.left + rect.width / 2 + 10) + "px";
-      noBtn.style.top = (rect.top + 5) + "px";
-    }
+    let hasMoved = false;
 
     function openDoor() {
       const bgMusic = document.getElementById("bg-music");
-      bgMusic.volume = 0.5;
-      bgMusic.play().catch(() => {});
-      
-      document.getElementById("door-overlay").style.opacity = "0";
+      const door = document.getElementById("door-overlay");
+      const content = document.getElementById("main-content");
+
+      bgMusic.volume = 0.5; 
+      bgMusic.play().catch(e => console.log("Music blocked"));
+
+      door.style.opacity = "0";
       setTimeout(() => {
-        document.getElementById("door-overlay").style.visibility = "hidden";
-        document.getElementById("main-content").classList.add("animate-pop");
-        // Re-calculate initial position in case screen resized
-        initNoButton();
+        door.style.visibility = "hidden";
+        content.classList.add("animate-pop");
       }, 600);
-    }
-
-    function moveButton(e) {
-      if (e) e.preventDefault();
-
-      const btnWidth = noBtn.offsetWidth;
-      const btnHeight = noBtn.offsetHeight;
-
-      // iPhone 16 Pro Safe Zones
-      const topPadding = 100;    // Keeps it clear of the Dynamic Island
-      const bottomPadding = 80;  // Keeps it clear of the Home Bar
-      const sidePadding = 30;    // Keeps it clear of the curved edges
-
-      // Calculate available range
-      const availableWidth = window.innerWidth - btnWidth - (sidePadding * 2);
-      const availableHeight = window.innerHeight - btnHeight - topPadding - bottomPadding;
-
-      // Generate random position within safe zone
-      const newX = Math.floor(Math.random() * availableWidth) + sidePadding;
-      const newY = Math.floor(Math.random() * availableHeight) + topPadding;
-
-      noBtn.style.left = newX + "px";
-      noBtn.style.top = newY + "px";
     }
 
     function yesClicked() {
       const content = document.getElementById("main-content");
-      noBtn.style.display = "none"; // Hide the pesky button
+      const noBtn = document.getElementById("no");
+      noBtn.style.display = "none";
       
+      content.classList.remove("animate-pop");
+      void content.offsetWidth; 
+
       content.innerHTML = `
         <h1 style="color:#006d6d;">Jin-jja-yo?<br>Jo-a-yo!</h1>
-        <p><a href="https://discord.com/users/dabrondawg" style="color:#00796b; font-weight:bold;" target="_blank">Really?<br>I'm glad!</a></p>
+        <p><a href="https://discord.com/users/dabrondawg" style="color:#00796b; font-weight:bold; text-decoration:underline;" target="_blank">Really?<br>I'm glad!</a></p>
       `;
+      
+      content.classList.add("animate-pop");
       setInterval(createHeart, 250);
+    }
+
+    function moveButton(event) {
+      if (event) event.preventDefault();
+      const button = document.getElementById("no");
+
+      // FIRST TIME SETUP: Transition from stationary to moving
+      if (!hasMoved) {
+        const rect = button.getBoundingClientRect();
+        // Set explicit coordinates before switching to fixed so it doesn't jump
+        button.style.left = rect.left + "px";
+        button.style.top = rect.top + "px";
+        button.style.position = "fixed";
+        button.style.margin = "0";
+        hasMoved = true;
+        
+        // Brief timeout allows the browser to register the switch before moving
+        setTimeout(calculateMove, 10);
+      } else {
+        calculateMove();
+      }
+    }
+
+    function calculateMove() {
+      const button = document.getElementById("no");
+      
+      /* MIDDLE OF SCREEN CONSTRAINTS (iPhone 16 Pro) */
+      // We want to keep it within the center 60% of the screen
+      const minX = window.innerWidth * 0.15;
+      const maxX = window.innerWidth * 0.85 - button.offsetWidth;
+      const minY = window.innerHeight * 0.25; // Below Dynamic Island
+      const maxY = window.innerHeight * 0.75 - button.offsetHeight; // Above Home Bar
+
+      const newX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+      const newY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+      button.style.left = newX + "px";
+      button.style.top = newY + "px";
     }
 
     function createHeart() {
       const heart = document.createElement("div");
-      heart.className = "heart";
+      heart.classList.add("heart");
       heart.innerHTML = Math.random() > 0.5 ? "💗" : "🤍";
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.top = "100vh";
@@ -203,5 +227,6 @@
       setTimeout(() => heart.remove(), 4000);
     }
   </script>
+
 </body>
 </html>
