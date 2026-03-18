@@ -52,11 +52,19 @@
       color: white;
       margin-top: 20px;
       font-weight: 300;
+      margin-bottom: 5px;
     }
 
     .envelope-icon {
       font-size: 80px;
       animation: bounce 2s infinite;
+    }
+
+    .volume-hint {
+      color: #b2dfdb;
+      font-size: 0.85em;
+      margin-top: 15px;
+      opacity: 0.8;
     }
 
     @keyframes bounce {
@@ -143,7 +151,8 @@
   <div id="door-overlay" onclick="openDoor()">
     <div class="envelope-icon">💌</div>
     <h2>You have a message...</h2>
-    <p style="color: #b2dfdb;">(Tap to open)</p>
+    <p style="color: #b2dfdb; margin: 0;">(Tap to open)</p>
+    <div class="volume-hint">🔊 Best experienced with volume on max</div>
   </div>
 
   <div id="main-content" class="content-overlay">
@@ -166,7 +175,7 @@
       const content = document.getElementById("main-content");
 
       // Play music (interaction allows this now)
-      bgMusic.volume = 0.5; 
+      bgMusic.volume = 0.7; // Slightly higher for impact
       bgMusic.play().catch(e => console.log("Music play blocked"));
 
       // Fade out the door
