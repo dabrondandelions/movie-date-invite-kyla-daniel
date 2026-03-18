@@ -83,7 +83,7 @@
       margin-top: 20px;
     }
 
-    /* Symmetrical buttons */
+    /* Buttons */
     #yes, #no {
       position: absolute;
       top: 50%;
@@ -97,7 +97,7 @@
       touch-action: manipulation;
     }
 
-    /* ✅ Increased spacing */
+    /* ✅ Better spacing */
     #yes {
       left: calc(50% - 110px);
       background-color: #00a8a8;
@@ -208,8 +208,8 @@
 
       const maxX = window.innerWidth - button.offsetWidth - padding;
 
-      // ✅ Prevent going too low
-      const maxY = window.innerHeight - button.offsetHeight - 80;
+      // ✅ STRICT boundary (never below screen)
+      const maxY = window.innerHeight - button.offsetHeight - padding;
 
       const newX = Math.random() * maxX;
       const newY = Math.random() * maxY;
