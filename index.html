@@ -52,19 +52,11 @@
       color: white;
       margin-top: 20px;
       font-weight: 300;
-      margin-bottom: 5px;
     }
 
     .envelope-icon {
       font-size: 80px;
       animation: bounce 2s infinite;
-    }
-
-    .volume-hint {
-      color: #b2dfdb;
-      font-size: 0.85em;
-      margin-top: 15px;
-      opacity: 0.8;
     }
 
     @keyframes bounce {
@@ -82,7 +74,7 @@
       width: 85%;
       max-width: 400px;
       z-index: 10;
-      display: none; /* Hidden until door opens */
+      display: none; 
     }
 
     h1 {
@@ -151,8 +143,7 @@
   <div id="door-overlay" onclick="openDoor()">
     <div class="envelope-icon">💌</div>
     <h2>You have a message...</h2>
-    <p style="color: #b2dfdb; margin: 0;">(Tap to open)</p>
-    <div class="volume-hint">🔊 Best experienced with volume on max</div>
+    <p style="color: #b2dfdb;">(Tap to open)</p>
   </div>
 
   <div id="main-content" class="content-overlay">
@@ -166,7 +157,6 @@
   </div>
 
   <audio id="bg-music" src="sweetnightguitar.mp3" loop preload="auto"></audio>
-  <audio id="sound" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3" preload="auto"></audio>
 
   <script>
     function openDoor() {
@@ -174,11 +164,9 @@
       const door = document.getElementById("door-overlay");
       const content = document.getElementById("main-content");
 
-      // Play music (interaction allows this now)
-      bgMusic.volume = 0.7; // Slightly higher for impact
+      bgMusic.volume = 0.5; 
       bgMusic.play().catch(e => console.log("Music play blocked"));
 
-      // Fade out the door
       door.style.opacity = "0";
       setTimeout(() => {
         door.style.visibility = "hidden";
@@ -187,9 +175,7 @@
     }
 
     function yesClicked() {
-      const sound = document.getElementById("sound");
-      sound.play().catch(e => console.log("Sound effect blocked"));
-
+      // Sound play line has been removed
       document.getElementById("main-content").innerHTML = `
         <h1 style="color:#006d6d;">kamsahamnida~ 💖</h1>
         <p>See you soon!</p>
