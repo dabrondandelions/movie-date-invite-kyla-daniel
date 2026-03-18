@@ -83,7 +83,7 @@
       margin-top: 20px;
     }
 
-    /* Symmetrical buttons */
+    /* Symmetrical buttons with updated spacing */
     #yes, #no {
       position: absolute;
       top: 50%;
@@ -98,14 +98,16 @@
     }
 
     #yes {
-      left: calc(50% - 90px);
+      /* Increased offset to the left */
+      left: calc(50% - 110px);
       background-color: #00a8a8;
       color: white;
       z-index: 10;
     }
 
     #no {
-      left: calc(50% + 10px);
+      /* Increased offset to the right */
+      left: calc(50% + 30px);
       background-color: #b2dfdb;
       color: #004c4c;
       z-index: 50;
@@ -189,7 +191,6 @@
       if (event) event.preventDefault();
       const button = document.getElementById("no");
 
-      // FIRST MOVE: prevent teleport
       if (!hasMoved) {
         const rect = button.getBoundingClientRect();
 
@@ -203,9 +204,7 @@
         return;
       }
 
-      // Move anywhere on screen
       const padding = 10;
-
       const maxX = window.innerWidth - button.offsetWidth - padding;
       const maxY = window.innerHeight - button.offsetHeight - padding;
 
